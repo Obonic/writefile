@@ -1,6 +1,6 @@
-// Ask user input: Name, Date and Story.  
-// Publish? Y/N  If yes, write all info down on Name.txt.
-// if no exit.
+// Ask user input: Name, Date & Story.  
+// ASk user if they wish to Publish? Y/N  If yes, write all info down on Name.txt.
+// if no, exit.
 
 use std::io;
 use std::io::prelude::*;
@@ -14,52 +14,81 @@ fn main() {
 
     let mut publish = false;
 
-    loop // while true
-    {
-        if publish != true
-
-        {
-            println!("Please enter your name.");
-            io::stdin()
-            .read_line(&mut inputName)
-            .expect("failed to read from stdin");
-        }{
-            println!("Please enter your Date of Birth.");
-            io::stdin()
-            .read_line(&mut inputDate)
-            .expect("failed to read from stdin");
-        }{
-            println!("Please enter your story");
-            io::stdin()
-            .read_line(&mut inputStory)
-            .expect("failed to read from stdin");
-        }{
-            println!("Would you like to publish? (write to File)");
-            io::stdin()
-            .read_line(&mut publish == true) ///notsure how to fix this yet.  How to toggle bollen?
-            .expect("failed to read from stdin");
-            
+    match askConsoleInput("Please enter your name.".to_string()){
+        Ok(n) => {
+            inputName = n;
         }
-        if publish == true { break; } //Break out of loop. 2 to the power of 10 = 1024
-        println!("Thank you! You Published your document {}", input_text1); 
-        writefile();
+        Err(error) => {
+            println!("error: {}", error);
+        },
     }
-    Err(_) =>  println!("This didn't work. :( ")
+
+    match askConsoleInput("Please enter your Date of Birth.".to_string()){
+            Ok(n) => {
+                inputDate = n;
+            }
+            Err(error) => {
+                println!("error: {}", error);
+            },
+        }
+
+    match askConsoleInput("Please enter your story".to_string()){
+            Ok(n) => {
+                inputStory = n;
+            }
+            Err(error) => {
+                println!("error: {}", error);
+            },
+        }
+
+    match askConsoleInput("Would you like to publish? (write to File)".to_string()){
+
+            Ok(n) => {
+                println!("Response {}", n);
+            }
+            Err(error) => {
+                println!("error: {}", error);
+            },
+        }
+
+        //println!("Thank you! You Published your document {}", inputName); 
+        //writefile(inputName,all); //Pass to function!
+    
 }
+
+
+fn askConsoleInput(mut Prompt:String) -> Result<String,String> {
+    let mut input = String::new();
+    println!("{}",Prompt);
+    match io::stdin().read_line(&mut Prompt) {
+        Ok(n) => {
+            println!("{} bytes read", n);
+            println!("{}", input);
+            Ok(input)
+        }
+        Err(error) => {
+            println!("error: {}", error);
+            Err(error.to_string())
+        },
+    }
+}
+
+
+
 
 
  //write to file.    Not working??????????????
-fn writefile() -> std::io::Result<()> {
-    let mut all ="{}";                          
-    let mut pos = 0;
-    let mut buffer = File::create("{}.txt",inputDate)?;
+// fn writefile(inputName: String, all: String) -> std::io::Result<()> {
+    //let mut all ="{}";                          
+//     let mut pos = 0;
+//     let mut buffer = File::create(inputName + ".txt")?;
 
-    while pos < all.len() {
-        let bytes_written = buffer.write(&all[pos..])?;
-        pos += bytes_written;
-    }
-    Ok(())
-}
+//     while pos < all.len() {
+//         let bytes_written = buffer.write(&all[pos..])?;
+//         pos += bytes_written;
+//     }
+//     Ok(())
+// }
 
 
 
