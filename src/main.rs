@@ -7,16 +7,16 @@ use std::io::prelude::*;
 use std::fs::File;
 
 fn main() {
-    let mut inputName = String::new();
-    let mut inputDate = String::new();
-    let mut inputStory = String::new();
-    let mut all = [inputName, inputDate, inputStory].concat();
+    let mut input_name = String::new();
+    let mut input_date = String::new();
+    let mut input_note = String::new();
+    let all = [input_name, input_date, input_note].concat();
 
     let mut publish = false;
 
     match askConsoleInput("Please enter your name.".to_string()){
         Ok(n) => {
-            inputName = n;
+            input_name = n;
         }
         Err(error) => {
             println!("error: {}", error);
@@ -25,7 +25,7 @@ fn main() {
 
     match askConsoleInput("Please enter your Date of Birth.".to_string()){
             Ok(n) => {
-                inputDate = n;
+                input_date = n;
             }
             Err(error) => {
                 println!("error: {}", error);
@@ -34,15 +34,14 @@ fn main() {
 
     match askConsoleInput("Please enter your story".to_string()){
             Ok(n) => {
-                inputStory = n;
+                input_note = n;
             }
             Err(error) => {
                 println!("error: {}", error);
             },
         }
 
-    match askConsoleInput("Would you like to publish? (write to File)".to_string()){
-
+    match askConsoleInput("Would you like to publish? (Write to file?)".to_string()){
             Ok(n) => {
                 println!("Response {}", n);
             }
@@ -50,17 +49,23 @@ fn main() {
                 println!("error: {}", error);
             },
         }
-
-        //println!("Thank you! You Published your document {}", inputName); 
-        //writefile(inputName,all); //Pass to function!
-    
+        //println!("Thank you! You Published your document {}", input_name); 
+   // writefile(input_name,all); //Pass to function!
 }
 
+// //Maybe?? V^? donno. ¯\_(ツ)_/¯
+// match  &input {
+//     Y => println!("YES PLEASE!!!"),
+//     N => println!("F*CKNO!"),
+//     _ => println!("what?"),
+// }
 
-fn askConsoleInput(mut Prompt:String) -> Result<String,String> {
-    let mut input = String::new();
-    println!("{}",Prompt);
-    match io::stdin().read_line(&mut Prompt) {
+
+
+fn askConsoleInput(mut prompt:String) -> Result<String,String> {
+    let input = String::new();
+    println!("{}",prompt);
+    match io::stdin().read_line(&mut prompt) {
         Ok(n) => {
             println!("{} bytes read", n);
             println!("{}", input);
@@ -73,22 +78,23 @@ fn askConsoleInput(mut Prompt:String) -> Result<String,String> {
     }
 }
 
-
-
-
-
- //write to file.    Not working??????????????
-// fn writefile(inputName: String, all: String) -> std::io::Result<()> {
+//write to file.   
+//Not sure this works yet.
+fn writefile(input_name: String, all: String) -> std::io::Result<()> {
     //let mut all ="{}";                          
-//     let mut pos = 0;
-//     let mut buffer = File::create(inputName + ".txt")?;
+    let mut pos = 0;
+    let mut buffer = File::create(input_name + ".txt")?;
 
-//     while pos < all.len() {
-//         let bytes_written = buffer.write(&all[pos..])?;
-//         pos += bytes_written;
-//     }
-//     Ok(())
-// }
+    while pos <all.len() {
+        let bytes_written = buffer.write(&all.as_bytes()[pos..])?;
+        pos += bytes_written;
+    }
+    Ok(())
+}
+
+
+
+
 
 
 
