@@ -9,12 +9,10 @@ use std::fs::File;
 fn main() {
     let mut input_name = String::new();
     let mut input_date = String::new();
-    let mut input_note = String::new();
-    let all = [input_name, input_date, input_note].concat();
+    let mut input_story = String::new();
+    let mut filename = String::new();
 
-    let mut publish = false;
-
-    match askConsoleInput("Please enter your name.".to_string()){
+    match ask_console_input("Please enter your name.".to_string()){
         Ok(n) => {
             input_name = n;
         }
@@ -23,7 +21,7 @@ fn main() {
         },
     }
 
-    match askConsoleInput("Please enter your Date of Birth.".to_string()){
+    match ask_console_input("Please enter your Date of Birth.".to_string()){
             Ok(n) => {
                 input_date = n;
             }
@@ -32,43 +30,57 @@ fn main() {
             },
         }
 
-    match askConsoleInput("Please enter your story".to_string()){
+    match ask_console_input("Please enter your story".to_string()){
             Ok(n) => {
-                input_note = n;
+                input_story = n;
             }
             Err(error) => {
                 println!("error: {}", error);
             },
         }
 
-    match askConsoleInput("Would you like to publish? (Write to file?)".to_string()){
+        match ask_console_input("Please name your file.".to_string()){
             Ok(n) => {
-                println!("Response {}", n);
+                filename = n;
             }
             Err(error) => {
                 println!("error: {}", error);
             },
         }
-        //println!("Thank you! You Published your document {}", input_name); 
-   // writefile(input_name,all); //Pass to function!
-}
 
-// //Maybe?? V^? donno. ¯\_(ツ)_/¯
-// match  &input {
-//     Y => println!("YES PLEASE!!!"),
-//     N => println!("F*CKNO!"),
-//     _ => println!("what?"),
-// }
+    match ask_console_input("Would you like to publish? Please enter Y or N. (write to File)".to_string()){
+            Ok(response) => {
+                println!("Response {}", response);
+                let strresponse = &response[..].to_string();
 
+                match strresponse.trim(){
+                    "y" => {
+                        println!("YES PLZ");
+                        let all = [input_name, input_date, input_story].concat();
+                        match writefile(filename, all){
+                            Ok(_) => println!("Write file sucess!!"),
+                            Err(n) => {
+                                println!("Write file sad. :(");
+                                println!("{}",n)
+                            },
+                        }
+                    },
+                    "n" => println!("Heck NO!"),
+                    _ => println!("??????"),
+                }
+            }
+            Err(error) => {
+                println!("error: {}", error);
+            },
+        }
+    }
 
-
-fn askConsoleInput(mut prompt:String) -> Result<String,String> {
-    let input = String::new();
+fn ask_console_input(prompt:String) -> Result<String,String> {
+    let mut input = String::new();
     println!("{}",prompt);
-    match io::stdin().read_line(&mut prompt) {
-        Ok(n) => {
-            println!("{} bytes read", n);
-            println!("{}", input);
+    match io::stdin().read_line(&mut input) {
+        Ok(_) => {
+            println!("You entered: {}", input);
             Ok(input)
         }
         Err(error) => {
@@ -78,39 +90,10 @@ fn askConsoleInput(mut prompt:String) -> Result<String,String> {
     }
 }
 
-//write to file.   
-//Not sure this works yet.
-fn writefile(input_name: String, all: String) -> std::io::Result<()> {
-    //let mut all ="{}";                          
-    let mut pos = 0;
-    let mut buffer = File::create(input_name + ".txt")?;
-
-    while pos <all.len() {
-        let bytes_written = buffer.write(&all.as_bytes()[pos..])?;
-        pos += bytes_written;
-    }
+//  write to file.  
+fn writefile(input_name: String, data: String) -> std::io::Result<()> {                          
+    let test = data.as_bytes();
+    let mut buffer = File::create(input_name.trim().to_owned() + ".txt")?;
+    buffer.write_all(test)?;
     Ok(())
 }
-
-
-
-
-
-
-
-// //This works
-// use std::io::prelude::*;
-// use std::fs::File;
-
-// fn main() -> std::io::Result<()> {
-//     let data = b"Doug's text to be writen to file Doug.txt";
-
-//     let mut pos = 0;
-//     let mut buffer = File::create("Doug.txt")?;
-
-//     while pos < data.len() {
-//         let bytes_written = buffer.write(&data[pos..])?;
-//         pos += bytes_written;
-//     }
-//     Ok(())
-// }
